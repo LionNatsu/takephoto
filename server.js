@@ -33,7 +33,7 @@ http.createServer((req, res) => {
             let messageBody = fragment.slice(0, fragment.indexOf('--'+boundary+'--'))
             
             console.log('server: received file')
-            fs.writeFile('temp.jpg', messageBody, (err) => {
+            fs.writeFile('received.jpg', messageBody, (err) => {
                 if (err) {
                     console.log('fs.writeFile: ' + err)
                     res.writeHead(500)
