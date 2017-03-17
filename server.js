@@ -14,7 +14,7 @@ http.createServer((req, res) => {
         })
         req.on('end', () => {
             let body = Buffer.concat(bodyList, bodyLen)
-            console.log('server: new request')
+            console.log('server: decapsulate')
             let ct = req.headers['content-type']
             let p = ct.toLowerCase().indexOf('boundary')
             if (p == -1) {
@@ -32,7 +32,7 @@ http.createServer((req, res) => {
             let fragment = body.slice(body.indexOf('\r\n\r\n') + 4)
             let messageBody = fragment.slice(0, fragment.indexOf('--'+boundary+'--'))
             
-            console.log('server: new file: ')
+            console.log('server: received file')
             fs.writeFile('temp.jpg', messageBody, (err) => {
                 if (err) {
                     console.log('fs.writeFile: ' + err)
