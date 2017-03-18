@@ -340,10 +340,10 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        if (velocityX < -5) {
+        if (velocityX < -1000) {
             this.flipNext();
             return true;
-        } else if (velocityX > 5) {
+        } else if (velocityX > 1000) {
             this.flipPrevious();
             return true;
         }
