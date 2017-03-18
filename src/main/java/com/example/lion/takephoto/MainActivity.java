@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        MainActivity.this.processFile(MainActivity.this.image, ((EditText) findViewById(R.id.editServer)).getText().toString());
+                        MainActivity.this.processFile(MainActivity.this.image);
                         MainActivity.this.image.delete();
                         MainActivity.this.jobLeave();
                     }
@@ -192,11 +192,10 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    private void processFile(File image, String text) {
+    private void processFile(File image) {
         log("upload", "start");
-        String result = null;
         try {
-            result = HttpHelper.uploadFile(this, image, this.getBaseURL() + "/upload", "img");
+            HttpHelper.uploadFile(this, image, this.getBaseURL() + "/upload", "img");
         } catch (IOException e) {
             log("upload", "failed, " + e.getLocalizedMessage());
             return;
