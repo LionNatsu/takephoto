@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements
     private File image;
     private Uri uri;
 
-    private Handler uiHandler = new Handler();
+    public Handler uiHandler = new Handler();
 
     private ReentrantReadWriteLock L = new ReentrantReadWriteLock();
     private boolean disable = false;
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements
         @Override
         public void run() {
             try {
-                String s = HttpHelper.test(MainActivity.this.getBaseURL() + "/test");
+                String s = HttpHelper.test(MainActivity.this, MainActivity.this.getBaseURL() + "/test");
                 log("http/test", s);
             } catch (IOException e) {
                 log("http/test", "failed, " + e.getLocalizedMessage());
@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements
         log("http/upload", "start");
         String result = null;
         try {
-            result = HttpHelper.uploadFile(image, this.getBaseURL() + "/upload", "img");
+            result = HttpHelper.uploadFile(this, image, this.getBaseURL() + "/upload", "img");
         } catch (IOException e) {
             log("http/upload", "failed, " + e.getLocalizedMessage());
             return;
