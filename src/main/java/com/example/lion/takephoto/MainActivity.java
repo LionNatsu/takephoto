@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements
                     MainActivity.this.jobLeave();
                     return;
                 }
-                log("camera", "image file size: " + String.valueOf(image.length()/1024) + " KiB");
+                log("camera", "image file size: " + String.valueOf(image.length() / 1024) + " KiB");
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -236,9 +236,13 @@ public class MainActivity extends AppCompatActivity implements
         findViewById(R.id.button).setOnClickListener(new ButtonTestClick());
         edit.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
             @Override
             public void afterTextChanged(Editable s) {
                 MainActivity.this.L2.writeLock().lock();
@@ -294,7 +298,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onShowPress(MotionEvent e) {}
+    public void onShowPress(MotionEvent e) {
+    }
 
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
@@ -331,7 +336,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onLongPress(MotionEvent e) {}
+    public void onLongPress(MotionEvent e) {
+    }
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {

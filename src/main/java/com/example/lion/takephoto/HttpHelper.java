@@ -20,14 +20,14 @@ import java.util.UUID;
 
 class HttpHelper {
     private static final String TAG = "uploadFile";
-    private static final int CONNECT_TIME_OUT = 2*1000;
-    private static final int READ_TIME_OUT = 5*1000;
+    private static final int CONNECT_TIME_OUT = 2 * 1000;
+    private static final int READ_TIME_OUT = 5 * 1000;
     private static final String CHARSET = "utf-8";
     private static final String PREFIX = "--";
     private static final String LINE_END = "\r\n";
     private static final String CONTENT_TYPE = "multipart/form-data";
 
-    private static final int TEST_SIZE = 4*1024*1024;
+    private static final int TEST_SIZE = 4 * 1024 * 1024;
     private static Random rand = new Random();
     private static byte[] testBytes = null;
 
@@ -63,28 +63,27 @@ class HttpHelper {
         conn.setRequestProperty("Charset", CHARSET);
         conn.setRequestProperty("Connection", "keep-alive");
         conn.setRequestProperty("Content-Type", CONTENT_TYPE + "; boundary=" + BOUNDARY);
-        OutputStream outputSteam=conn.getOutputStream();
+        OutputStream outputSteam = conn.getOutputStream();
         DataOutputStream dos = new DataOutputStream(outputSteam);
         String sb = PREFIX +
                 BOUNDARY + LINE_END +
-                "Content-Disposition: form-data; name=\"" + name +"\"; filename=\"" + filename + "\"" + LINE_END +
+                "Content-Disposition: form-data; name=\"" + name + "\"; filename=\"" + filename + "\"" + LINE_END +
                 "Content-Type: application/octet-stream; charset=" + CHARSET + LINE_END +
                 LINE_END;
         dos.write(sb.getBytes());
         byte[] bytes = new byte[1024];
         int len = 0;
-        while((len=is.read(bytes))!=-1)
-        {
+        while ((len = is.read(bytes)) != -1) {
             dos.write(bytes, 0, len);
         }
         is.close();
         dos.write(LINE_END.getBytes());
-        byte[] end_data = (PREFIX+BOUNDARY+PREFIX+LINE_END).getBytes();
+        byte[] end_data = (PREFIX + BOUNDARY + PREFIX + LINE_END).getBytes();
         dos.write(end_data);
         dos.flush();
         int res = conn.getResponseCode();
-        if(res == 200) return conn.getResponseMessage();
-        throw new IOException("response code: "+res);
+        if (res == 200) return conn.getResponseMessage();
+        throw new IOException("response code: " + res);
     }
 
     public static String uploadFile(MainActivity context, File file, String RequestURL, String name) throws IOException {
@@ -103,7 +102,7 @@ class HttpHelper {
         uploadStream(context, bais, RequestURL, "test", "");
         endTick = System.currentTimeMillis();
         double duration = endTick - startTick;
-        return "success, speed: " + String.format(Locale.US, "%.1f", (TEST_SIZE/1024.0)/(duration/1000) ) + " KiB/s";
+        return "success, speed: " + String.format(Locale.US, "%.1f", (TEST_SIZE / 1024.0) / (duration / 1000)) + " KiB/s";
     }
 
     static void askForMeteredConn(MainActivity context) {
