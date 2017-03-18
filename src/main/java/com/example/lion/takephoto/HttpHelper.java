@@ -19,7 +19,6 @@ import java.util.Random;
 import java.util.UUID;
 
 class HttpHelper {
-    private static final String TAG = "uploadFile";
     private static final int CONNECT_TIME_OUT = 2 * 1000;
     private static final int READ_TIME_OUT = 5 * 1000;
     private static final String CHARSET = "utf-8";
@@ -35,7 +34,7 @@ class HttpHelper {
     private static boolean prepareDialog = true;
     private static boolean regardlessOfMeteredConnection;
 
-    public static String uploadStream(MainActivity context, InputStream is, String RequestURL, String name, final String filename) throws IOException {
+    private static String uploadStream(MainActivity context, InputStream is, String RequestURL, String name, final String filename) throws IOException {
         String BOUNDARY = UUID.randomUUID().toString();
 
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -72,7 +71,7 @@ class HttpHelper {
                 LINE_END;
         dos.write(sb.getBytes());
         byte[] bytes = new byte[1024];
-        int len = 0;
+        int len;
         while ((len = is.read(bytes)) != -1) {
             dos.write(bytes, 0, len);
         }
@@ -86,12 +85,12 @@ class HttpHelper {
         throw new IOException("response code: " + res);
     }
 
-    public static String uploadFile(MainActivity context, File file, String RequestURL, String name) throws IOException {
+    static String uploadFile(MainActivity context, File file, String RequestURL, String name) throws IOException {
         InputStream is = new FileInputStream(file);
         return uploadStream(context, is, RequestURL, name, file.getName());
     }
 
-    public static String test(MainActivity context, String RequestURL) throws IOException {
+    static String uploadTest(MainActivity context, String RequestURL) throws IOException {
         if (testBytes == null) {
             testBytes = new byte[TEST_SIZE];
             rand.nextBytes(testBytes);
@@ -105,7 +104,7 @@ class HttpHelper {
         return "success, speed: " + String.format(Locale.US, "%.1f", (TEST_SIZE / 1024.0) / (duration / 1000)) + " KiB/s";
     }
 
-    static void askForMeteredConn(MainActivity context) {
+    private static void askForMeteredConn(MainActivity context) {
         waitForDialog = true;
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Warning: Metered Connection");

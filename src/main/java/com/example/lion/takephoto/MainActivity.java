@@ -372,7 +372,7 @@ public class MainActivity extends AppCompatActivity implements
         @Override
         public void run() {
             try {
-                String s = HttpHelper.test(MainActivity.this, MainActivity.this.getBaseURL() + "/test");
+                String s = HttpHelper.uploadTest(MainActivity.this, MainActivity.this.getBaseURL() + "/test");
                 log("test", s);
             } catch (IOException e) {
                 log("test", "failed, " + e.getLocalizedMessage());
