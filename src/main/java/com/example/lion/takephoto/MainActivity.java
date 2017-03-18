@@ -117,9 +117,9 @@ public class MainActivity extends AppCompatActivity implements
         public void run() {
             try {
                 String s = HttpHelper.test(MainActivity.this, MainActivity.this.getBaseURL() + "/test");
-                log("http/test", s);
+                log("test", s);
             } catch (IOException e) {
-                log("http/test", "failed, " + e.getLocalizedMessage());
+                log("test", "failed, " + e.getLocalizedMessage());
             }
             MainActivity.this.uiHandler.post(new Runnable() {
                 @Override
@@ -226,15 +226,15 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void processFile(File image, String text) {
-        log("http/upload", "start");
+        log("upload", "start");
         String result = null;
         try {
             result = HttpHelper.uploadFile(this, image, this.getBaseURL() + "/upload", "img");
         } catch (IOException e) {
-            log("http/upload", "failed, " + e.getLocalizedMessage());
+            log("upload", "failed, " + e.getLocalizedMessage());
             return;
         }
-        log("http/upload", "success");
+        log("upload", "success");
     }
 
     @Override
