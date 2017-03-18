@@ -39,22 +39,17 @@ public class MainActivity extends AppCompatActivity implements
     private static final int CAMERA_REQUEST_CODE = 1001;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 200;
     private static final int REFRACTORY_PERIOD = 500;
-
+    public Handler uiHandler = new Handler();
     private ViewFlipper viewFlipper;
     private GestureDetector detector;
     private CharSequence defaultBanner;
     private int currentPage = 0;
-
     private ReentrantLock LR = new ReentrantLock();
     private boolean inRefractoryPeriod = false;
     private ReentrantReadWriteLock LP = new ReentrantReadWriteLock();
     private boolean progressStatus = false;
-
     private File image;
     private Uri uri;
-
-    public Handler uiHandler = new Handler();
-
     private ReentrantReadWriteLock L = new ReentrantReadWriteLock();
     private boolean disable = false;
 
@@ -112,25 +107,6 @@ public class MainActivity extends AppCompatActivity implements
         return "http://" + serverName;
     }
 
-    private class Test extends Thread {
-        @Override
-        public void run() {
-            try {
-                String s = HttpHelper.test(MainActivity.this, MainActivity.this.getBaseURL() + "/test");
-                log("test", s);
-            } catch (IOException e) {
-                log("test", "failed, " + e.getLocalizedMessage());
-            }
-            MainActivity.this.uiHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    MainActivity.this.setProgressBar(false);
-                    findViewById(R.id.button).setEnabled(true);
-                }
-            });
-        }
-    }
-
     private synchronized void setProgressBar(final boolean flag) {
         LP.writeLock().lock();
         this.progressStatus = flag;
@@ -165,20 +141,11 @@ public class MainActivity extends AppCompatActivity implements
         LR.unlock();
         this.updateProgressBar();
     }
+
     private synchronized void updateProgressBar() {
         LP.readLock().lock();
         ((ProgressBar) findViewById(R.id.progressBar)).setIndeterminate(progressStatus);
         LP.readLock().unlock();
-    }
-
-    private class ButtonTestClick implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            findViewById(R.id.button).setEnabled(false);
-            MainActivity.this.setProgressBar(true);
-            Test test = new Test();
-            test.start();
-        }
     }
 
     @Override
@@ -325,8 +292,10 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onDown(MotionEvent e) {
         return false;
     }
+
     @Override
     public void onShowPress(MotionEvent e) {}
+
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
         if (this.currentPage != 0) return false;
@@ -355,12 +324,15 @@ public class MainActivity extends AppCompatActivity implements
         }
         return true;
     }
+
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         return false;
     }
+
     @Override
     public void onLongPress(MotionEvent e) {}
+
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         if (velocityX < -5) {
@@ -389,5 +361,34 @@ public class MainActivity extends AppCompatActivity implements
                 R.anim.right_out));
         this.viewFlipper.showPrevious();
         this.currentPage = (--this.currentPage) ^ 2;
+    }
+
+    private class Test extends Thread {
+        @Override
+        public void run() {
+            try {
+                String s = HttpHelper.test(MainActivity.this, MainActivity.this.getBaseURL() + "/test");
+                log("test", s);
+            } catch (IOException e) {
+                log("test", "failed, " + e.getLocalizedMessage());
+            }
+            MainActivity.this.uiHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    MainActivity.this.setProgressBar(false);
+                    findViewById(R.id.button).setEnabled(true);
+                }
+            });
+        }
+    }
+
+    private class ButtonTestClick implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            findViewById(R.id.button).setEnabled(false);
+            MainActivity.this.setProgressBar(true);
+            Test test = new Test();
+            test.start();
+        }
     }
 }
