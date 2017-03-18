@@ -232,6 +232,7 @@ public class MainActivity extends AppCompatActivity implements
             result = HttpHelper.uploadFile(image, this.getBaseURL() + "/upload", "img");
         } catch (IOException e) {
             log("http/upload", "failed, " + e.getLocalizedMessage());
+            return;
         }
         log("http/upload", "success");
     }
