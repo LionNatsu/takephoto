@@ -1,11 +1,9 @@
 package com.example.lion.takephoto;
 
-import android.support.annotation.Nullable;
-
+import java.io.ByteArrayInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -13,7 +11,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Locale;
 import java.util.Random;
-import java.util.TimerTask;
 import java.util.UUID;
 
 class HttpHelper {
@@ -29,8 +26,7 @@ class HttpHelper {
     private static Random rand = new Random();
     private static byte[] testBytes = null;
 
-
-    public static String uploadFile(File file, String RequestURL, String name) throws IOException {
+    public static String uploadStream(InputStream is, String RequestURL, String name, String filename) throws IOException {
         String BOUNDARY = UUID.randomUUID().toString();
         URL url = new URL(RequestURL);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -47,11 +43,10 @@ class HttpHelper {
         DataOutputStream dos = new DataOutputStream(outputSteam);
         String sb = PREFIX +
                 BOUNDARY + LINE_END +
-                "Content-Disposition: form-data; name=\"" + name +"\"; filename=\"" + file.getName() + "\"" + LINE_END +
+                "Content-Disposition: form-data; name=\"" + name +"\"; filename=\"" + filename + "\"" + LINE_END +
                 "Content-Type: application/octet-stream; charset=" + CHARSET + LINE_END +
                 LINE_END;
         dos.write(sb.getBytes());
-        InputStream is = new FileInputStream(file);
         byte[] bytes = new byte[1024];
         int len = 0;
         while((len=is.read(bytes))!=-1)
@@ -68,21 +63,20 @@ class HttpHelper {
         throw new IOException("response code: "+res);
     }
 
-    @Nullable
+    public static String uploadFile(File file, String RequestURL, String name) throws IOException {
+        InputStream is = new FileInputStream(file);
+        return uploadStream(is, RequestURL, name, file.getName());
+    }
+
     public static String test(String RequestURL) throws IOException {
-        File file = File.createTempFile("speedTest", "http");
-        file.delete();
-        OutputStream os = new FileOutputStream(file);
         if (testBytes == null) {
             testBytes = new byte[TEST_SIZE];
             rand.nextBytes(testBytes);
         }
-        os.write(testBytes);
-        os.flush();
-        os.close();
+        ByteArrayInputStream bais = new ByteArrayInputStream(testBytes);
         long startTick, endTick;
         startTick = System.currentTimeMillis();
-        uploadFile(file, RequestURL, "test");
+        uploadStream(bais, RequestURL, "test", "");
         endTick = System.currentTimeMillis();
         double duration = endTick - startTick;
         return "success, speed: " + String.format(Locale.US, "%.1f", (TEST_SIZE/1024.0)/(duration/1000) ) + " KiB/s";
